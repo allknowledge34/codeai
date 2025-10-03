@@ -90,33 +90,27 @@ http.route({
   }),
 });
 
-// validate and fix workout plan to ensure it has proper numeric types
-function validateWorkoutPlan(plan: any) {
-  const validatedPlan = {
-    schedule: plan.schedule,
-    exercises: plan.exercises.map((exercise: any) => ({
-      day: exercise.day,
-      routines: exercise.routines.map((routine: any) => ({
-        name: routine.name,
-        sets: typeof routine.sets === "number" ? routine.sets : parseInt(routine.sets) || 1,
-        reps: typeof routine.reps === "number" ? routine.reps : parseInt(routine.reps) || 10,
+// validate and fix career plan to ensure proper schema
+function validateCareerPlan(plan: any) {
+  return {
+    sections: plan.sections.map((section: any) => ({
+      title: section.title,
+      items: section.items.map((item: any) => ({
+        name: item.name,
+        details: item.details,
       })),
     })),
   };
-  return validatedPlan;
 }
 
-// validate diet plan to ensure it strictly follows schema
-function validateDietPlan(plan: any) {
-  // only keep the fields we want
-  const validatedPlan = {
-    dailyCalories: plan.dailyCalories,
-    meals: plan.meals.map((meal: any) => ({
-      name: meal.name,
-      foods: meal.foods,
+// validate and fix job plan to ensure proper schema
+function validateJobPlan(plan: any) {
+  return {
+    dailyTasks: plan.dailyTasks.map((task: any) => ({
+      taskName: task.taskName,
+      durationMinutes: typeof task.durationMinutes === "number" ? task.durationMinutes : parseInt(task.durationMinutes) || 30,
     })),
   };
-  return validatedPlan;
 }
 
 http.route({
@@ -129,127 +123,79 @@ http.route({
       const {
         user_id,
         age,
-        height,
-        weight,
-        injuries,
-        workout_days,
-        fitness_goal,
-        fitness_level,
-        dietary_restrictions,
+        education_level,
+        experience_years,
+        career_goal,
+        skills,
+        availability_hours_per_week,
       } = payload;
-
-      console.log("Payload is here:", payload);
 
       const model = genAI.getGenerativeModel({
         model: "gemini-2.0-flash-001",
         generationConfig: {
-          temperature: 0.4, // lower temperature for more predictable outputs
+          temperature: 0.4,
           topP: 0.9,
           responseMimeType: "application/json",
         },
       });
 
-      const workoutPrompt = `You are an experienced fitness coach creating a personalized workout plan based on:
+      // Career plan prompt
+      const careerPrompt = `You are an AI Career/Resume Coach creating a personalized career development plan based on:
       Age: ${age}
-      Height: ${height}
-      Weight: ${weight}
-      Injuries or limitations: ${injuries}
-      Available days for workout: ${workout_days}
-      Fitness goal: ${fitness_goal}
-      Fitness level: ${fitness_level}
-      
-      As a professional coach:
-      - Consider muscle group splits to avoid overtraining the same muscles on consecutive days
-      - Design exercises that match the fitness level and account for any injuries
-      - Structure the workouts to specifically target the user's fitness goal
-      
+      Education Level: ${education_level}
+      Experience: ${experience_years} years
+      Career Goal: ${career_goal}
+      Skills: ${skills.join(", ")}
+      Availability per week: ${availability_hours_per_week} hours
+
       CRITICAL SCHEMA INSTRUCTIONS:
-      - Your output MUST contain ONLY the fields specified below, NO ADDITIONAL FIELDS
-      - "sets" and "reps" MUST ALWAYS be NUMBERS, never strings
-      - For example: "sets": 3, "reps": 10
-      - Do NOT use text like "reps": "As many as possible" or "reps": "To failure"
-      - Instead use specific numbers like "reps": 12 or "reps": 15
-      - For cardio, use "sets": 1, "reps": 1 or another appropriate number
-      - NEVER include strings for numerical fields
-      - NEVER add extra fields not shown in the example below
-      
-      Return a JSON object with this EXACT structure:
+      - Return JSON object ONLY with "sections" array
+      - Each section: { "title": string, "items": [ { "name": string, "details": string } ] }
+      - NO extra fields or text outside JSON
+      - Example:
       {
-        "schedule": ["Monday", "Wednesday", "Friday"],
-        "exercises": [
+        "sections": [
           {
-            "day": "Monday",
-            "routines": [
-              {
-                "name": "Exercise Name",
-                "sets": 3,
-                "reps": 10
-              }
+            "title": "Skill Development",
+            "items": [
+              { "name": "Learn TypeScript", "details": "3 hours per week for 4 weeks" }
             ]
           }
         ]
-      }
-      
-      DO NOT add any fields that are not in this example. Your response must be a valid JSON object with no additional text.`;
+      }`;
 
-      const workoutResult = await model.generateContent(workoutPrompt);
-      const workoutPlanText = workoutResult.response.text();
+      const careerResult = await model.generateContent(careerPrompt);
+      let careerPlan = JSON.parse(careerResult.response.text());
+      careerPlan = validateCareerPlan(careerPlan);
 
-      // VALIDATE THE INPUT COMING FROM AI
-      let workoutPlan = JSON.parse(workoutPlanText);
-      workoutPlan = validateWorkoutPlan(workoutPlan);
+      // Job plan prompt
+      const jobPrompt = `You are an AI Career/Resume Coach creating a daily job/task plan for user to achieve career goals:
+      Career Goal: ${career_goal}
+      Skills: ${skills.join(", ")}
+      Availability: ${availability_hours_per_week} hours/week
 
-      const dietPrompt = `You are an experienced nutrition coach creating a personalized diet plan based on:
-        Age: ${age}
-        Height: ${height}
-        Weight: ${weight}
-        Fitness goal: ${fitness_goal}
-        Dietary restrictions: ${dietary_restrictions}
-        
-        As a professional nutrition coach:
-        - Calculate appropriate daily calorie intake based on the person's stats and goals
-        - Create a balanced meal plan with proper macronutrient distribution
-        - Include a variety of nutrient-dense foods while respecting dietary restrictions
-        - Consider meal timing around workouts for optimal performance and recovery
-        
-        CRITICAL SCHEMA INSTRUCTIONS:
-        - Your output MUST contain ONLY the fields specified below, NO ADDITIONAL FIELDS
-        - "dailyCalories" MUST be a NUMBER, not a string
-        - DO NOT add fields like "supplements", "macros", "notes", or ANYTHING else
-        - ONLY include the EXACT fields shown in the example below
-        - Each meal should include ONLY a "name" and "foods" array
+      CRITICAL SCHEMA INSTRUCTIONS:
+      - Return JSON object ONLY with "dailyTasks" array
+      - Each task: { "taskName": string, "durationMinutes": number }
+      - NO extra fields
+      - Example:
+      {
+        "dailyTasks": [
+          { "taskName": "Update LinkedIn Profile", "durationMinutes": 30 }
+        ]
+      }`;
 
-        Return a JSON object with this EXACT structure and no other fields:
-        {
-          "dailyCalories": 2000,
-          "meals": [
-            {
-              "name": "Breakfast",
-              "foods": ["Oatmeal with berries", "Greek yogurt", "Black coffee"]
-            },
-            {
-              "name": "Lunch",
-              "foods": ["Grilled chicken salad", "Whole grain bread", "Water"]
-            }
-          ]
-        }
-        
-        DO NOT add any fields that are not in this example. Your response must be a valid JSON object with no additional text.`;
+      const jobResult = await model.generateContent(jobPrompt);
+      let jobPlan = JSON.parse(jobResult.response.text());
+      jobPlan = validateJobPlan(jobPlan);
 
-      const dietResult = await model.generateContent(dietPrompt);
-      const dietPlanText = dietResult.response.text();
-
-      // VALIDATE THE INPUT COMING FROM AI
-      let dietPlan = JSON.parse(dietPlanText);
-      dietPlan = validateDietPlan(dietPlan);
-
-      // save to our DB: CONVEX
+      // save to Convex DB
       const planId = await ctx.runMutation(api.plans.createPlan, {
         userId: user_id,
-        dietPlan,
+        careerPlan,
+        jobPlan,
         isActive: true,
-        workoutPlan,
-        name: `${fitness_goal} Plan - ${new Date().toLocaleDateString()}`,
+        name: `${career_goal} Plan - ${new Date().toLocaleDateString()}`,
       });
 
       return new Response(
@@ -257,8 +203,8 @@ http.route({
           success: true,
           data: {
             planId,
-            workoutPlan,
-            dietPlan,
+            careerPlan,
+            jobPlan,
           },
         }),
         {
@@ -267,7 +213,7 @@ http.route({
         }
       );
     } catch (error) {
-      console.error("Error generating fitness plan:", error);
+      console.error("Error generating career plan:", error);
       return new Response(
         JSON.stringify({
           success: false,

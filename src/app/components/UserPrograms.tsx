@@ -3,11 +3,11 @@ import { Button } from "./ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import {
   ChevronRight,
-  Dumbbell,
+  FileText,
   Sparkles,
   Users,
   Clock,
-  AppleIcon,
+  Briefcase,
   ShieldIcon,
 } from "lucide-react";
 import { USER_PROGRAMS } from "@/constants";
@@ -31,11 +31,11 @@ const UserPrograms = () => {
           <div className="p-8 text-center">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               <span className="text-foreground">AI-Generated </span>
-              <span className="text-primary">Programs</span>
+              <span className="text-primary">Career Programs</span>
             </h2>
 
             <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-10">
-              Explore personalized fitness plans our AI assistant has created for other users
+              Explore personalized career and resume plans our AI assistant has created for other users
             </p>
 
             {/* STATS */}
@@ -78,7 +78,7 @@ const UserPrograms = () => {
                   <span className="text-sm text-primary">USER.{program.id}</span>
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  {program.fitness_level.toUpperCase()}
+                  {program.current_role.toUpperCase()}
                 </div>
               </div>
 
@@ -98,7 +98,7 @@ const UserPrograms = () => {
                     </CardTitle>
                     <div className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
                       <Users className="h-4 w-4" />
-                      {program.age}y • {program.workout_days}d/week
+                      {program.age}y • {program.experience_years}y exp
                     </div>
                   </div>
                 </div>
@@ -106,7 +106,7 @@ const UserPrograms = () => {
                 <div className="flex justify-between items-center gap-4">
                   <div className="px-3 py-1 bg-primary/10 rounded border border-primary/20 text-sm text-primary flex items-center gap-2">
                     <Sparkles className="h-4 w-4" />
-                    {program.fitness_goal}
+                    {program.career_goal}
                   </div>
                   <div className="text-sm text-muted-foreground flex items-center gap-2">
                     <Clock className="h-4 w-4" />
@@ -120,30 +120,30 @@ const UserPrograms = () => {
                 <div className="space-y-5 pt-2">
                   <div className="flex items-start gap-3">
                     <div className="p-2 rounded-md bg-primary/10 text-primary mt-0.5">
-                      <Dumbbell className="h-5 w-5" />
+                      <FileText className="h-5 w-5" />
                     </div>
                     <div className="flex-1">
                       <div className="flex justify-between items-center">
                         <h3 className="font-medium text-foreground">
-                          {program.workout_plan.title}
+                          {program.resume_tips.title}
                         </h3>
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">
-                        {program.equipment_access}
+                        {program.skills.join(", ")}
                       </p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-3">
                     <div className="p-2 rounded-md bg-secondary/10 text-secondary mt-0.5">
-                      <AppleIcon className="h-5 w-5" />
+                      <Briefcase className="h-5 w-5" />
                     </div>
                     <div className="flex-1">
                       <div className="flex justify-between items-center">
-                        <h3 className="font-medium text-foreground">{program.diet_plan.title}</h3>
+                        <h3 className="font-medium text-foreground">{program.career_plan.title}</h3>
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">
-                        System optimized nutrition
+                        System optimized career steps
                       </p>
                     </div>
                   </div>
@@ -167,7 +167,7 @@ const UserPrograms = () => {
                 <div className="mt-5 pt-5 border-t border-border">
                   <div className="text-sm text-muted-foreground">
                     <span className="text-primary">&gt; </span>
-                    {program.workout_plan.description.substring(0, 120)}...
+                    {program.resume_tips.description.substring(0, 120)}...
                   </div>
                 </div>
               </CardContent>
@@ -191,12 +191,12 @@ const UserPrograms = () => {
               size="lg"
               className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg"
             >
-              Generate Your Program
+              Generate Your Career Program
               <Sparkles className="ml-2 h-5 w-5" />
             </Button>
           </Link>
           <p className="text-muted-foreground mt-4">
-            Join 500+ users with AI-customized fitness programs
+            Join 500+ users with AI-customized career programs
           </p>
         </div>
       </div>

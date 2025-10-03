@@ -5,33 +5,33 @@ export const createPlan = mutation({
   args: {
     userId: v.string(),
     name: v.string(),
-    workoutPlan: v.object({
-      schedule: v.array(v.string()),
-      exercises: v.array(
+    careerPlan: v.object({
+      sections: v.array(
         v.object({
-          day: v.string(),
-          routines: v.array(
-            v.object({
-              name: v.string(),
-              sets: v.number(),
-              reps: v.number(),
-            })
-          ),
+          title: v.string(),
+          steps: v.array(v.string()),   
         })
       ),
     }),
-    dietPlan: v.object({
-      dailyCalories: v.number(),
-      meals: v.array(
+    jobPlan: v.object({
+      dailyTasks: v.array(
         v.object({
-          name: v.string(),
-          foods: v.array(v.string()),
+          day: v.string(),
+          tasks: v.array(
+            v.object({
+              name: v.string(),
+              description: v.optional(v.string()),
+              priority: v.optional(v.string()), 
+              estimatedTime: v.optional(v.string()), 
+            })
+          ),
         })
       ),
     }),
     isActive: v.boolean(),
   },
   handler: async (ctx, args) => {
+    // purane active plan ko deactivate kar do
     const activePlans = await ctx.db
       .query("plans")
       .withIndex("by_user_id", (q) => q.eq("userId", args.userId))
@@ -42,9 +42,8 @@ export const createPlan = mutation({
       await ctx.db.patch(plan._id, { isActive: false });
     }
 
-    const planId = await ctx.db.insert("plans", args);
-
-    return planId;
+    // naya plan insert karo
+    return await ctx.db.insert("plans", args);
   },
 });
 

@@ -31,7 +31,6 @@ export const createPlan = mutation({
     isActive: v.boolean(),
   },
   handler: async (ctx, args) => {
-    // purane active plan ko deactivate kar do
     const activePlans = await ctx.db
       .query("plans")
       .withIndex("by_user_id", (q) => q.eq("userId", args.userId))
@@ -42,7 +41,6 @@ export const createPlan = mutation({
       await ctx.db.patch(plan._id, { isActive: false });
     }
 
-    // naya plan insert karo
     return await ctx.db.insert("plans", args);
   },
 });

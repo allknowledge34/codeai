@@ -90,25 +90,27 @@ http.route({
   }),
 });
 
-// validate and fix career plan to ensure proper schema
 function validateCareerPlan(plan: any) {
   return {
-    sections: plan.sections.map((section: any) => ({
-      title: section.title,
-      items: section.items.map((item: any) => ({
-        name: item.name,
-        details: item.details,
-      })),
+    sections: (plan.sections || []).map((section: any) => ({
+      title: section.title || "",
+      steps: (section.items || []).map(
+        (item: any) => `${item.name || ""}: ${item.details || ""}`
+      ),
     })),
   };
 }
 
-// validate and fix job plan to ensure proper schema
 function validateJobPlan(plan: any) {
   return {
-    dailyTasks: plan.dailyTasks.map((task: any) => ({
-      taskName: task.taskName,
-      durationMinutes: typeof task.durationMinutes === "number" ? task.durationMinutes : parseInt(task.durationMinutes) || 30,
+    dailyTasks: (plan.dailyTasks || []).map((dayTask: any, index: number) => ({
+      day: dayTask.day || `Day ${index + 1}`,  
+      tasks: (dayTask.tasks || []).map((t: any) => ({
+        name: t.name || "",
+        description: t.description || "",
+        priority: t.priority || "",
+        estimatedTime: t.estimatedTime || "",
+      })),
     })),
   };
 }
@@ -227,5 +229,6 @@ http.route({
     }
   }),
 });
+
 
 export default http;

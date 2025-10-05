@@ -18,11 +18,8 @@ const GenerateProgramPage = () => {
   const router = useRouter();
 
   const messageContainerRef = useRef<HTMLDivElement>(null);
-
-  // SOLUTION to get rid of "Meeting has ended" error
   useEffect(() => {
     const originalError = console.error;
-    // override console.error to ignore "Meeting has ended" errors
     console.error = function (msg, ...args) {
       if (
         msg &&
@@ -30,27 +27,23 @@ const GenerateProgramPage = () => {
           (args[0] && args[0].toString().includes("Meeting has ended")))
       ) {
         console.log("Ignoring known error: Meeting has ended");
-        return; // don't pass to original handler
+        return; 
       }
 
-      // pass all other errors to the original handler
       return originalError.call(console, msg, ...args);
     };
 
-    // restore original handler on unmount
     return () => {
       console.error = originalError;
     };
   }, []);
 
-  // auto-scroll messages
   useEffect(() => {
     if (messageContainerRef.current) {
       messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
     }
   }, [messages]);
 
-  // navigate user to profile page after the call ends
   useEffect(() => {
     if (callEnded) {
       const redirectTimer = setTimeout(() => {
@@ -61,7 +54,6 @@ const GenerateProgramPage = () => {
     }
   }, [callEnded, router]);
 
-  // setup event listeners for vapi
   useEffect(() => {
     const handleCallStart = () => {
       console.log("Call started");
@@ -108,7 +100,6 @@ const GenerateProgramPage = () => {
       .on("message", handleMessage)
       .on("error", handleError);
 
-    // cleanup event listeners on unmount
     return () => {
       vapi
         .off("call-start", handleCallStart)

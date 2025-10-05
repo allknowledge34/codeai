@@ -42,7 +42,7 @@ export const USER_PROGRAMS = [
     current_role: "Junior Analyst",
     skills: ["SQL", "Python", "Excel", "Tableau"],
     resume_tips: {
-      title: "Data Analyst Resume Optimization",
+      title: "Entry-Level Data Analyst Resume Optimization",
       weekly_schedule: [
         { day: "Tuesday", focus: "Highlight Analytics Projects", duration: "40 min" },
         { day: "Thursday", focus: "Quantify Achievements", duration: "30 min" },
@@ -52,7 +52,7 @@ export const USER_PROGRAMS = [
         "This plan guides analysts to present their data skills effectively, quantify results in their resume, and showcase projects to attract recruiters.",
     },
     career_plan: {
-      title: "Data Analyst Career Progression",
+      title: "Data Analyst Career Progression Plan",
       daily_tasks: "1-2 hours",
       steps: [
         { step: "Advanced SQL & Python", example: "Data manipulation & visualization" },
@@ -74,7 +74,7 @@ export const USER_PROGRAMS = [
     current_role: "Associate PM",
     skills: ["Roadmapping", "Stakeholder Management", "Agile", "Data Analysis"],
     resume_tips: {
-      title: "Product Manager Resume Tips",
+      title: "Entry-Level Product Manager Resume Tips",
       weekly_schedule: [
         { day: "Monday", focus: "Highlight Impact Metrics", duration: "30 min" },
         { day: "Wednesday", focus: "Project Outcomes", duration: "30 min" },

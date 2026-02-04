@@ -1,36 +1,105 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💼 CodeAi – Smart Career & Resume Coach Platform
+
+An AI-powered full stack web application that helps users improve resumes, analyze job roles, and receive personalized career guidance.
+
+---
+
+![Demo App](/public/maxresdefault-10.jpg)
+
+---
+
+## 🚀 Overview
+
+CodeAi acts as a personal career mentor by combining large language models with real-time web technologies.
+
+Users can chat with an AI coach, upload resumes for instant feedback, generate professional summaries, and get job recommendations tailored to their skills.
+
+Designed as a production-ready AI SaaS platform.
+
+---
+
+## ✨ Core Features
+
+🤖 AI Career Coach (text + voice conversations)  
+📄 Resume upload & instant AI feedback  
+📊 Job description analysis & suggestions  
+🧠 AI-generated resume summaries  
+🔐 Secure authentication with Clerk  
+⚡ Real-time data handling with Convex  
+🎨 Clean responsive UI with Tailwind & Shadcn UI  
+🚀 Fast Next.js performance  
+
+---
+
+## 🏗 Tech Stack
+
+### Frontend
+- Next.js  
+- React  
+- Tailwind CSS  
+- Shadcn UI  
+
+### AI & Voice
+- Gemini AI  
+- Vapi Voice API  
+
+### Backend & Database
+- Convex Realtime Database  
+
+### Authentication
+- Clerk  
+
+---
+
+## Setup .env file
+
+```js
+# Clerk Authentication
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+
+# Clerk Redirect URLs
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+
+# Vapi Voice AI
+NEXT_PUBLIC_VAPI_WORKFLOW_ID=
+NEXT_PUBLIC_VAPI_API_KEY=
+
+# Convex Database
+CONVEX_DEPLOYMENT=
+NEXT_PUBLIC_CONVEX_URL=
+```
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository
+2. Install dependencies:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```shell
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Set up your environment variables as shown above
+4. Run the development server:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```shell
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🎯 Use Cases
+✔ Resume projects
+✔ Hackathons
+✔ AI demos
+✔ Full stack practice
+✔ Startup MVP
 
-To learn more about Next.js, take a look at the following resources:
+---
+## 🤝 Contributing
+Contributions are welcome.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+## ⭐ Support
+If you found this project useful, give it a star ⭐
